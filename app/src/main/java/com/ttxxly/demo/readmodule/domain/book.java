@@ -1,4 +1,4 @@
-package com.ttxxly.demo.readmodule;
+package com.ttxxly.demo.readmodule.domain;
 
 /**
  * description:

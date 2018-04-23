@@ -6,14 +6,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.support.v4.content.ContextCompat;
 import android.widget.ProgressBar;
 
+import com.ttxxly.demo.readmodule.domain.book;
 import com.ttxxly.demo.readmodule.utils.ScreenUtils;
 import com.ttxxly.demo.readmodule.utils.StringUtils;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.MappedByteBuffer;
+import java.sql.Time;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -63,8 +63,7 @@ public class PageFactory {
     /**
      * 页首页尾的位置
      */
-    private int curEndPos = 0, curBeginPos = 0, tempBeginPos, tempEndPos;
-    private int currentChapter, tempChapter;
+    private int curEndPos = 0, curBeginPos = 0;
     /**
      * 将文本文件分行保存， Vector是一个动态数组
      */
@@ -72,27 +71,21 @@ public class PageFactory {
 
     private Paint mPaint;
     private Paint mTitlePaint;
-    private Bitmap mBookPageBg;
 
     private DecimalFormat decimalFormat = new DecimalFormat("#0.00");
     private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
     private int timeLen = 0, percentLen = 0;
-    private String time;
-    private int battery = 40;
     private Rect rectF;
-    private ProgressBar batteryView;
-    private Bitmap batteryBitmap;
 
-    private String bookId;
     private int chapterSize = 0;
-    private int currentPage = 1;
     private String charset = "UTF-8";
+    private final String time;
 
 
-   PageFactory(Context context, int width, int height, int fontSize) {
+    PageFactory(Context context, int width, int height, int fontSize) {
         mContext = context;
         mWidth = ScreenUtils.getScreenWidth(context);
-        mHeight = ScreenUtils.getScreenHeight(context);
+        mHeight = ScreenUtils.getRealHeight(context);
         mFontSize = fontSize;
         mLineSpace = mFontSize / 5 * 2;
         mTitleFontSize = ScreenUtils.dpToPxInt(context, 16);
@@ -129,11 +122,8 @@ public class PageFactory {
         if (mLines.size() > 0) {
             int y = marginHeight + (mLineSpace << 1);
             // 绘制背景
-            if (mBookPageBg != null) {
-                canvas.drawBitmap(mBookPageBg, null, rectF, null);
-            } else {
-                canvas.drawColor(Color.WHITE);
-            }
+           canvas.drawColor(Color.WHITE);
+
             // 绘制标题
             canvas.drawText(book.getTitle(), marginWidth, y, mTitlePaint);
             y += mLineSpace + mTitleFontSize;
@@ -148,11 +138,7 @@ public class PageFactory {
                 }
                 y += mFontSize;
             }
-
-            float percent = (float) currentChapter * 100 / chapterSize;
-            canvas.drawText(decimalFormat.format(percent) + "%", (mWidth - percentLen) / 2,
-                    mHeight - marginHeight, mTitlePaint);
-
+            //绘制时间
             String mTime = dateFormat.format(new Date());
             canvas.drawText(mTime, mWidth - marginWidth - timeLen, mHeight - marginHeight, mTitlePaint);
         }
